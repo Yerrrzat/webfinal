@@ -1,4 +1,98 @@
 $(document).ready(function () {
+
+  function registerUser(name, email, password) {
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.some(u => u.email === email)) {
+      alert('User with this email already exists!');
+      return;
+    }
+    users.push({ name: name, email: email, password: password });
+    localStorage.setItem('users', JSON.stringify(users));
+    alert('Registration successful! Please log in.');
+    window.location.href = 'login.html';
+  }
+
+  function loginUser(email, password) {
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    let user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      alert('Login successful!');
+      window.location.href = 'profile.html';
+    } else {
+      alert('Invalid email or password.');
+    }
+  }
+
+  function showProfile() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (currentUser) {
+      $('#profileName').text(currentUser.name);
+      $('#profileEmail').text(currentUser.email);
+    } else {
+      window.location.href = 'login.html';
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'index.html';
+  }
+
+  
+  if ($('#registerBtn').length) { 
+    $('#registerBtn').on('click', function() {
+      const name = $('#regName').val();
+      const email = $('#regEmail').val();
+      const password = $('#regPassword').val();
+      const confirmPassword = $('#regConfirmPassword').val();
+
+      if (!name || !email || !password || !confirmPassword) {
+        alert('All fields are required!');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return;
+      }
+
+      registerUser(name, email, password);
+    });
+  }
+
+  if ($('#loginBtn').length) { 
+    $('#loginBtn').on('click', function() {
+      const email = $('#loginEmail').val();
+      const password = $('#loginPassword').val();
+
+      if (!email || !password) {
+        alert('Email and password are required!');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+      loginUser(email, password);
+    });
+  }
+  
+
   $('#searchInput').on('keyup', function () {
     const query = $(this).val().trim().toLowerCase();
     $('.highlight').contents().unwrap();
@@ -47,101 +141,7 @@ $(document).ready(function () {
             $item.hide();
         }
     });
-      
-    function registerUser(name, email, password) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        if (users.some(u => u.email === email)) {
-            alert('User with this email already exists!');
-            return;
-        }
-        users.push({ name: name, email: email, password: password });
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('Registration successful! Please log in.');
-        window.location.href = 'login.html';
-    }
-
-    function loginUser(email, password) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        let user = users.find(u => u.email === email && u.password === password);
-        if (user) {
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            alert('Login successful!');
-            window.location.href = 'profile.html';
-        } else {
-            alert('Invalid email or password.');
-        }
-    }
-
-    function showProfile() {
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser) {
-            $('#profileName').text(currentUser.name);
-            $('#profileEmail').text(currentUser.email);
-        } else {
-            window.location.href = 'login.html';
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'index.html';
-    }
-
-   
-    if ($('#registerBtn').length) {
-        $('#registerBtn').on('click', function() {
-            const name = $('#regName').val();
-            const email = $('#regEmail').val();
-            const password = $('#regPassword').val();
-            const confirmPassword = $('#regConfirmPassword').val();
-
-            if (!name || !email || !password || !confirmPassword) {
-                alert('All fields are required!');
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-
-            if (password.length < 6) {
-                alert('Password must be at least 6 characters long.');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match.');
-                return;
-            }
-
-            registerUser(name, email, password);
-        });
-    }
-
-    if ($('#loginBtn').length) {
-        $('#loginBtn').on('click', function() {
-            const email = $('#loginEmail').val();
-            const password = $('#loginPassword').val();
-
-            if (!email || !password) {
-                alert('Email and password are required!');
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid email address.');
-                return;
-            }
-
-            loginUser(email, password);
-        });
-    }
-    
-  });
-
+  }); 
   const teaSuggestions = [];
   $('.search-item').each(function () {
     const title = $(this).find('h3, h4, .card-title').first().text().trim();
@@ -273,6 +273,7 @@ $(document).ready(function () {
   });
 });
 
+
 $('.responsive-card button').on('click', function () {
   const card = $(this).closest('.responsive-card');
   const title = card.find('h4').text().trim();
@@ -296,4 +297,3 @@ $('.responsive-card button').on('click', function () {
   clearTimeout(popup.data('timer'));
   popup.data('timer', setTimeout(() => popup.fadeOut(300), 4000));
 });
-
