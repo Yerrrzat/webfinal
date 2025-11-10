@@ -9,6 +9,13 @@
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
   <div id="progressBar"></div>
+  <div id="warningModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background-color: white; padding: 30px; border-radius: 12px; text-align: center; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <h4 style="color: var(--brown); margin-bottom: 15px;">Registration Required</h4>
+      <p style="color: #555; margin-bottom: 20px;">To place an order, please create an account.</p>
+      <button id="closeWarningBtn" class="btn btn-brown">Got it!</button>
+    </div>
+  </div>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-brown">
     <div class="container">
@@ -30,6 +37,12 @@
       <button id="themeToggle" class="btn btn-outline-brown ms-2" aria-label="Toggle theme">
   🌞 / 🌙
 </button>
+<span id="authLinks">
+  <a href="login.html" class="btn btn-outline-brown ms-2" id="loginLink" style="display: none;">Login</a>
+  <a href="register.html" class="btn btn-outline-brown ms-2" id="registerLink" style="display: none;">Register</a>
+  <a href="profile.html" class="btn btn-outline-brown ms-2" id="profileLink" style="display: none;">Profile</a>
+  <button id="logoutBtn" class="btn btn-outline-danger ms-2" style="display: none;">Logout</button>
+</span>
     </div>
   </nav>
 

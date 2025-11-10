@@ -413,3 +413,28 @@ aside, main, footer, header {
     color 0.35s ease-in-out,
     border-color 0.35s ease-in-out;
 }
+
+
+.navbar .btn-outline-brown {
+    color: #ffffff;
+    border-color: #ffffff; 
+    background-color: transparent;
+}
+
+.navbar .btn-outline-brown:hover {
+    color: #5D4037; 
+    border-color: #ffffff; 
+    background-color: #ffffff; 
+}
+
+.navbar .btn-outline-danger {
+    color: #ffffff; 
+    border-color: #ffffff; 
+    background-color: transparent; 
+}
+
+.navbar .btn-outline-danger:hover {
+    color: #d32f2f; 
+    border-color: #ffffff; 
+    background-color: #ffffff; 
+}

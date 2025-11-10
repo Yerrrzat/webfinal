@@ -1,4 +1,22 @@
 $(document).ready(function () {
+    function updateAuthUI() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            $('#loginLink, #registerLink').hide();
+            $('#profileLink, #logoutBtn').show();
+        } else {
+            $('#profileLink, #logoutBtn').hide();
+            $('#loginLink, #registerLink').show();
+        }
+    }
+
+    
+    updateAuthUI();
+
+    $('#logoutBtn').on('click', function() {
+        logout(); 
+        updateAuthUI(); 
+    });
 
   function registerUser(name, email, password) {
     let users = JSON.parse(localStorage.getItem('users')) || [];
@@ -193,22 +211,70 @@ $(document).ready(function () {
     });
   }
   if ($('.counter').length) animateCounters();
+    
+      
+    $('#deliveryForm').on('submit', function (e) {
+        e.preventDefault(); 
 
-  $('#deliveryForm, #contactForm').on('submit', function (e) {
-    e.preventDefault();
-    const $btn = $(this).find('button[type="submit"]');
-    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status"></span> Please wait...');
-    setTimeout(() => {
-      const name = $(this).find('[name="name"]').val() || 'Customer';
-      showToast(`Thank you, ${name}! Your message was sent.`);
-      $(this)[0].reset();
-      $btn.prop('disabled', false).text('Submit');
-    }, 1500);
-  });
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-  function showToast(message) {
-    $('#toast').text(message).fadeIn().delay(2500).fadeOut();
-  }
+        if (!currentUser) {
+          $('#warningModal').show();
+          return;
+        }
+
+        const $btn = $(this).find('button[type="submit"]');
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status"></span> Please wait...');
+        setTimeout(() => {
+            const name = $(this).find('[name="name"]').val() || currentUser.name; 
+            showToast(`Thank you, ${name}! Your order was placed.`);
+            $(this)[0].reset();
+            $btn.prop('disabled', false).text('Submit Order');
+        }, 1500);
+    });
+    
+
+   
+
+    function showToast(message) {
+        $('#toast').text(message).fadeIn().delay(2500).fadeOut();
+    }
+
+    
+    $('#modalLoginBtn').on('click', function() {
+        $('#authModal').hide(); 
+        window.location.href = 'login.html'; 
+    });
+
+    $('#modalRegisterBtn').on('click', function() {
+        $('#authModal').hide(); 
+        window.location.href = 'register.html'; 
+    });
+
+    $('#modalCloseBtn').on('click', function() {
+        $('#authModal').hide(); 
+    });
+
+    
+    $(window).on('click', function(event) {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    
+    $('#closeWarningBtn').on('click', function() {
+        $('#warningModal').hide();
+    });
+
+    
+    $(window).on('click', function(event) {
+        const modal = document.getElementById('warningModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 
   $('.copy-btn').on('click', function () {
     const text = $(this).data('text');
@@ -259,7 +325,7 @@ $(document).ready(function () {
   if (hour >= 5 && hour < 12) greeting = "Good morning! Enjoy a fresh green tea.";
   else if (hour >= 12 && hour < 17) greeting = "Good afternoon! Try our Assam black tea.";
   else if (hour >= 17 && hour < 21) greeting = "Good evening! Relax with chamomile infusion.";
-  else greeting = "Hello night owl! Our teas are always brewing.";
+  else greeting = "Good night! Our teas are always brewing.";
   $('#dynamicGreeting').text(greeting);
 
   $('.accordion-header').on('click', function () {
@@ -297,3 +363,4 @@ $('.responsive-card button').on('click', function () {
   clearTimeout(popup.data('timer'));
   popup.data('timer', setTimeout(() => popup.fadeOut(300), 4000));
 });
+
