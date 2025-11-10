@@ -438,3 +438,73 @@ aside, main, footer, header {
     border-color: #ffffff; 
     background-color: #ffffff; 
 }
+
+
+.rating {
+  margin: 10px 0;
+  display: flex; 
+  justify-content: center;
+  gap: 2px; 
+}
+
+.star {
+  font-size: 1.5rem; 
+  color: #ddd; 
+  cursor: pointer; 
+  transition: color 0.2s ease; 
+}
+
+.star:hover,
+.star.active {
+  color: #FFD700; 
+}
+
+.dark-mode .star {
+  color: #555;
+}
+
+.dark-mode .star:hover,
+.dark-mode .star.active {
+  color: #FFB300; 
+}
+
+
+.star.half-active {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #FFD700 50%, #ddd 50%); 
+}
+
+.dark-mode .star.half-active {
+  background: linear-gradient(90deg, #FFB300 50%, #555 50%); 
+}
+
+
+.star.active,
+.star.hover {
+  background: none; 
+}
+
+.dark-mode #warningModal .modal-content {
+    background-color: #1E1E1E !important; 
+}
+
+.dark-mode #warningModal h4 {
+    color: #FFCC80 !important; 
+}
+
+.dark-mode #warningModal p {
+    color: #F5F5F5 !important; 
+}
+
+.dark-mode #warningModal .btn-brown {
+    color: #FFFFFF !important; 
+    background-color: #5D4037 !important; 
+    border-color: #5D4037 !important; 
+}
+
+.dark-mode #warningModal .btn-brown:hover {
+    color: #FFFFFF !important; 
+    background-color: #4A342C !important; 
+    border-color: #4A342C !important; 
+}

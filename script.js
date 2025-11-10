@@ -42,20 +42,22 @@ $(document).ready(function () {
     }
   }
 
-  function showProfile() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-      $('#profileName').text(currentUser.name);
-      $('#profileEmail').text(currentUser.email);
-    } else {
-      window.location.href = 'login.html';
+  
+    function showProfile() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            $('#profileName').text(currentUser.name);
+            $('#profileEmail').text(currentUser.email);
+        } else {
+            window.location.href = 'login.html';
+        }
     }
-  }
 
-  function logout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
-  }
+    
+    function logout() {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    }
 
   
   if ($('#registerBtn').length) { 
@@ -337,6 +339,130 @@ $(document).ready(function () {
     const alt = $(this).attr('alt');
     $('#mainImage').attr({ src, alt });
   });
+      
+    function saveRating(userId, itemId, rating) {
+        let ratings = JSON.parse(localStorage.getItem('ratings')) || {};
+        ratings[userId] = ratings[userId] || {};
+        ratings[userId][itemId] = rating;
+        localStorage.setItem('ratings', JSON.stringify(ratings));
+    }
+
+    
+    function getUserRating(userId, itemId) {
+        const ratings = JSON.parse(localStorage.getItem('ratings')) || {};
+        return ratings[userId] && ratings[userId][itemId];
+    }
+
+    
+    function getAverageRating(itemId) {
+        const ratings = JSON.parse(localStorage.getItem('ratings')) || {};
+        let totalRating = 0;
+        let count = 0;
+
+        for (const userId in ratings) {
+            if (ratings[userId][itemId]) {
+                totalRating += ratings[userId][itemId];
+                count++;
+            }
+        }
+
+        if (count === 0) return null; 
+        return totalRating / count; 
+    }
+
+   
+    function displayRating($ratingContainer) {
+        const itemId = $ratingContainer.data('item-id');
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        
+        $ratingContainer.find('.star').off('mouseenter mouseleave');
+
+       
+        const averageRating = getAverageRating(itemId);
+
+        
+        let userRating = null;
+        if (currentUser) {
+            userRating = getUserRating(currentUser.email, itemId);
+        }
+
+       
+        $ratingContainer.find('.star').each(function(index) {
+            const $star = $(this);
+            const starValue = index + 1;
+
+            
+            $star.removeClass('active hover');
+            $star.text('☆');
+
+            
+            if (currentUser && userRating !== null) {
+                if (starValue <= userRating) {
+                    $star.addClass('active').text('★');
+                }
+            } else {
+               
+                if (averageRating !== null) {
+                    if (starValue <= Math.floor(averageRating)) {
+                        
+                        $star.addClass('active').text('★');
+                    } else if (starValue === Math.floor(averageRating) + 1) {
+                        
+                        if (averageRating - Math.floor(averageRating) > 0.5) {
+                            $star.addClass('active').text('★'); 
+                        } else if (averageRating - Math.floor(averageRating) > 0) {
+                             
+                             if (averageRating - Math.floor(averageRating) > 0.5) {
+                                 $star.addClass('active').text('★');
+                             }
+                        }
+                    }
+                }
+            }
+        });
+
+        
+        if (currentUser) {
+           
+            $ratingContainer.find('.star').on('mouseenter', function() {
+                const $hoveredStar = $(this);
+                const hoverValue = parseInt($hoveredStar.data('rating'));
+                $ratingContainer.find('.star').each(function(index) {
+                    const $star = $(this);
+                    const starValue = index + 1;
+                    if (starValue <= hoverValue) {
+                        $star.addClass('hover').text('★');
+                    } else {
+                        $star.removeClass('hover').text('☆');
+                    }
+                });
+            });
+
+            $ratingContainer.find('.star').on('mouseleave', function() {
+               
+                displayRating($ratingContainer); 
+            });
+
+           
+            $ratingContainer.off('click', '.star').on('click', '.star', function() {
+                const $star = $(this);
+                const rating = parseInt($star.data('rating'));
+                saveRating(currentUser.email, itemId, rating);
+                displayRating($ratingContainer); 
+            });
+        } else {
+            
+            $ratingContainer.find('.star').off('mouseenter mouseleave click');
+            
+            $ratingContainer.find('.star').css('opacity', '0.6').css('cursor', 'default');
+        }
+    }
+
+    
+    $('.rating').each(function() {
+        displayRating($(this));
+    });
 });
 
 

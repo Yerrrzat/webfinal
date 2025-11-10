@@ -23,9 +23,18 @@
     <script src="script.js"></script>
     <script>
         $(document).ready(function() {
-            showProfile();
-            $('#logoutBtn').on('click', function() {
-                logout();
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            if (user) {
+                $('#profileName').text(user.name);
+                $('#profileEmail').text(user.email);
+            } else {
+                alert('You are not logged in. Redirecting to login page.');
+                window.location.href = 'login.html';
+            }
+
+            $('#logoutBtn').click(function() {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
             });
         });
     </script>
