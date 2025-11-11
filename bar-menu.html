@@ -56,6 +56,9 @@
 
       <main class="col-lg-9 col-md-8">
         <div class="mb-4">
+          <div class="mb-3">
+            <button id="cycleCurrencyBtn" class="btn btn-outline-secondary btn-sm">Change Currency</button>
+          </div>
           <input type="text" id="searchInput" class="form-control" placeholder="Search teas...">
           <div id="suggestions"></div>
         </div>
@@ -71,7 +74,7 @@
               <h3>Green Teas</h3>
               <h4>Sencha (Japan)</h4>
               <p>Grassy, refreshing, with a hint of sweetness. Steeped at 70°C.</p>
-              <p class="item-price-display fw-bold">₸1090</p> 
+              <p class="item-price-display fw-bold" data-base-price-kzt="1090">₸1090</p> 
               <div class="rating" data-item-id="Sencha">
                   <span class="star" data-rating="1">☆</span>
                   <span class="star" data-rating="2">☆</span>
@@ -92,7 +95,7 @@
               <h3>Black Teas</h3>
               <h4>Assam (India)</h4>
               <p>Robust, malty, perfect with milk or honey. Brew at 95°C.</p>
-              <p class="item-price-display fw-bold">₸990</p> 
+              <p class="item-price-display fw-bold" data-base-price-kzt="990">₸990</p> 
               <div class="rating" data-item-id="Assam">
                   <span class="star" data-rating="1">☆</span>
                   <span class="star" data-rating="2">☆</span>
@@ -113,7 +116,7 @@
               <h3>Herbal Infusions</h3>
               <h4>Chamomile & Mint</h4>
               <p>Caffeine-free blend to calm the mind and soothe digestion.</p>
-              <p class="item-price-display fw-bold">₸1,490</p> 
+              <p class="item-price-display fw-bold" data-base-price-kzt="1490">₸1,490</p> 
               <div class="rating" data-item-id="ChamomileMint">
                   <span class="star" data-rating="1">☆</span>
                   <span class="star" data-rating="2">☆</span>
@@ -127,6 +130,8 @@
       </main>
     </div>
   </div>
+
+  
 
   <footer class="site-footer bg-brown text-light text-center py-3 mt-auto">
     <p>Team Members: Mukhametkali Dias, Qaldyqan Yerzat</p>

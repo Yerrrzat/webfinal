@@ -463,6 +463,102 @@ $(document).ready(function () {
     $('.rating').each(function() {
         displayRating($(this));
     });
+
+    
+    let exchangeRates = {};
+
+    async function fetchExchangeRates(baseCurrency = 'KZT') {
+        if (exchangeRates[baseCurrency]) {
+            console.log('Using cached rates for base currency:', baseCurrency);
+            return exchangeRates[baseCurrency];
+        }
+
+        const apiUrl = `https://api.exchangerate-api.com/v4/latest/${baseCurrency}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+            const data = await response.json();
+            console.log('Fetched rates from API for base currency', baseCurrency, ':', data);
+
+            exchangeRates[baseCurrency] = data.rates;
+            return data.rates;
+        } catch (error) {
+            console.error('Error fetching exchange rates:', error);
+            return null;
+        }
+    }
+    const currencyCycle = ['KZT', 'USD', 'EUR'];
+    let currentCurrencyIndex = 0;
+    let currentDisplayCurrency = currencyCycle[currentCurrencyIndex];
+
+    function cycleCurrency() {
+        currentCurrencyIndex = (currentCurrencyIndex + 1) % currencyCycle.length;
+        currentDisplayCurrency = currencyCycle[currentCurrencyIndex];
+        console.log(`Cycled to currency: ${currentDisplayCurrency}`);
+        updatePrices(currentDisplayCurrency);
+       
+    }
+
+    $('#cycleCurrencyBtn').on('click', function(e) {
+        e.preventDefault();
+        cycleCurrency();
+    });
+
+    function formatPrice(amount, currencyCode) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currencyCode,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(amount);
+    }
+
+  
+    async function updatePrices(targetCurrency = currentDisplayCurrency) {
+    const baseCurrency = 'KZT';
+    const rates = await fetchExchangeRates(baseCurrency);
+
+    if (!rates) {
+        console.error('Could not update prices due to API error.');
+        return;
+    }
+
+    const conversionRate = rates[targetCurrency];
+    if (conversionRate === undefined) {
+        console.error(`Conversion rate for ${targetCurrency} not found.`);
+        return;
+    }
+
+    $('.item-price-display').each(function() {
+         
+         const basePriceInKZT = parseFloat($(this).data('base-price-kzt')); 
+         if (isNaN(basePriceInKZT)) {
+             console.warn('Base price not found or invalid for element:', this);
+             return; 
+         }
+
+         const convertedPrice = basePriceInKZT * conversionRate;
+         const formattedPrice = formatPrice(convertedPrice, targetCurrency);
+         $(this).text(formattedPrice); 
+         
+    });
+}
+
+   
+    $('#currencySelector').on('change', function() {
+        const selectedCurrency = $(this).val();
+        console.log(`Currency changed to: ${selectedCurrency}`);
+        updatePrices(selectedCurrency); 
+    });
+
+  
+    if (window.location.pathname.includes('menu.html') || window.location.pathname.includes('bar-menu.html')) {
+        updatePrices(); 
+    }
+
 });
 
 
